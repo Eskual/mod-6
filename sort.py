@@ -158,8 +158,8 @@ def normalize(name_of_file):
         
     return edited_name_of_file
 
-if __name__ == "__main__":
-    
+def main():
+        
     directory = sys.argv[1]
 
     main_directory = directory #Зберігання змінної "головної директорії" для подальшого сортування файлів в системні папки в корені
@@ -177,3 +177,7 @@ if __name__ == "__main__":
     archives_extensions = ('.zip', '.gz', '.tar')
 
     sorting(directory)
+
+if __name__ == "__main__":
+    
+    main()
