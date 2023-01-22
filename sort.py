@@ -87,7 +87,7 @@ def sorting(directory):
                 if len(os.listdir(link)) == 0: #Видалення пустих папок на виході з рекурсії
                     print(str(link), 'is empty! DELETING')
                     os.rmdir(os.path.abspath(link))
-                    return None
+                    return ''
                 os.rename(os.path.abspath(link), directory + '\\' + normalize(link.name)) # перейменування папки при виході з рекурсивного занурення в папку
         print('RESULT for ', str(directory))
         print('Known formats: ', known_formats)
