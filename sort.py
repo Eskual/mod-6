@@ -9,6 +9,13 @@ archives_extensions = ('.zip', '.gz', '.tar')
 
 directory = input('Input folder: ') #Ввід папки
 
+main_directory = directory
+
+os.makedirs(main_directory + '\\images\\', exist_ok=True)
+os.makedirs(main_directory + '\\videos\\', exist_ok=True)
+os.makedirs(main_directory + '\\documents\\', exist_ok=True)
+os.makedirs(main_directory + '\\music\\', exist_ok=True)
+os.makedirs(main_directory + '\\archives\\', exist_ok=True) # створення папок для сортування
 
 def sorting(directory):
 
@@ -23,75 +30,59 @@ def sorting(directory):
     special_folders = ['images','videos','documents','music','archives','undefined']
 
     objects = os.scandir(directory) #зчитування об'єктів в папці
-    #print(len(os.listdir(directory)))
-    if len(os.listdir(directory)) == 0: #Видалення пустих папок
+    
+    if len(os.listdir(directory)) == 0: #Видалення пустих папок напочатку рекурсії
         print(str(directory), 'is empty! DELETING')
         os.rmdir(os.path.abspath(directory))
         return ''
         
-
     else:
-
-        os.makedirs(directory + '\\images\\', exist_ok=True)
-        os.makedirs(directory + '\\videos\\', exist_ok=True)
-        os.makedirs(directory + '\\documents\\', exist_ok=True)
-        os.makedirs(directory + '\\music\\', exist_ok=True)
-        os.makedirs(directory + '\\archives\\', exist_ok=True) # створення папок для сортування
 
         known_formats = []
         unknown_formats = []
         for object in objects: # Додавання в відповідний список об'єктів та переміщення об'єкту у відповідну папку
-
-            #print(object.name, type(object))
 
             cooked_object = object.name.lower()
             
             
             if os.DirEntry.is_dir(object): # Перевірка, чи потрібно занурюватись у рекурсію (ігнорування спеціальних папок)
 
-                print(object)
                 if object.name not in special_folders:
 
-                    #os.rename(os.path.abspath(object), directory + '\\' + normalize(object.name))
-                    #print(object.name, os.path.abspath(object))
                     links_to_folders.append(object)
 
                 continue
 
             elif cooked_object.endswith(images_extensions): # Перевірка на закінчення відомих форматів
                 images.append(object.name) # Додавання в список файлу
-                os.replace(os.path.abspath(object), directory + '\\images\\' + normalize(os.path.splitext(object.name)[0]) + (os.path.splitext(object.name)[-1])) # Переміщення у відповідну папку файла
+                os.replace(os.path.abspath(object), main_directory + '\\images\\' + normalize(os.path.splitext(object.name)[0]) + (os.path.splitext(object.name)[-1])) # Переміщення у відповідну папку файла
                 if os.path.splitext(object)[-1] not in known_formats: # Будування списку зустрічаних форматів
                     known_formats.append(os.path.splitext(object)[-1])
-                
-                #print(os.path.splitext(object)[-1])
 
             elif cooked_object.endswith(videos_extensions):
 
                 videos.append(object.name)
-                os.replace(os.path.abspath(object), directory + '\\videos\\' + normalize(os.path.splitext(object.name)[0]) + (os.path.splitext(object.name)[-1]))
+                os.replace(os.path.abspath(object), main_directory + '\\videos\\' + normalize(os.path.splitext(object.name)[0]) + (os.path.splitext(object.name)[-1]))
                 if os.path.splitext(object)[-1] not in known_formats:
-                    known_formats.append(os.path.splitext(object)[-1])
-                #os.rename(directory + '\\videos\\' + object.name, directory + '\\videos\\' + normalize(os.path.splitext(object.name)))
-                
+                    known_formats.append(os.path.splitext(object)[-1])      
 
             elif cooked_object.endswith(documents_extensions):
 
                 documents.append(object.name)
-                os.replace(os.path.abspath(object), directory + '\\documents\\' + normalize(os.path.splitext(object.name)[0]) + (os.path.splitext(object.name)[-1]))
+                os.replace(os.path.abspath(object), main_directory + '\\documents\\' + normalize(os.path.splitext(object.name)[0]) + (os.path.splitext(object.name)[-1]))
                 if os.path.splitext(object)[-1] not in known_formats:
                     known_formats.append(os.path.splitext(object)[-1])
 
             elif cooked_object.endswith(music_extensions):
 
                 music.append(object.name)
-                os.replace(os.path.abspath(object), directory + '\\music\\' + normalize(os.path.splitext(object.name)[0]) + (os.path.splitext(object.name)[-1]))
+                os.replace(os.path.abspath(object), main_directory + '\\music\\' + normalize(os.path.splitext(object.name)[0]) + (os.path.splitext(object.name)[-1]))
                 if os.path.splitext(object)[-1] not in known_formats:
                     known_formats.append(os.path.splitext(object)[-1])
 
             elif cooked_object.endswith(archives_extensions):
                 
-                shutil.unpack_archive(str(os.path.abspath(object)), directory + '\\archives\\' + str(object.name).rsplit('.', 1)[0])
+                shutil.unpack_archive(str(os.path.abspath(object)), main_directory + '\\archives\\' + str(object.name).rsplit('.', 1)[0])
                 archives.append(object.name)
                 if os.path.splitext(object)[-1] not in known_formats:
                     known_formats.append(os.path.splitext(object)[-1])
@@ -108,6 +99,10 @@ def sorting(directory):
             for link in links_to_folders:
                 print('CHECKING directory ', str(link.name))
                 print(sorting(os.path.abspath(link)), ' ')
+                if len(os.listdir(link)) == 0: #Видалення пустих папок на виході з рекурсії
+                    print(str(link), 'is empty! DELETING')
+                    os.rmdir(os.path.abspath(link))
+                    return None
                 os.rename(os.path.abspath(link), directory + '\\' + normalize(link.name)) # перейменування папки при виході з рекурсивного занурення в папку
         print('RESULT for ', str(directory))
         print('Known formats: ', known_formats)
