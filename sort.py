@@ -1,21 +1,6 @@
 import os
 import shutil
-
-images_extensions = ('.jpeg', '.png', '.jpg', '.svg')
-videos_extensions = ('.avi', '.mp4', '.mov', '.mkv')
-documents_extensions = ('.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx')
-music_extensions = ('.mp3', '.ogg', '.wav', '.amr')
-archives_extensions = ('.zip', '.gz', '.tar')
-
-directory = input('Input folder: ') #Ввід папки
-
-main_directory = directory
-
-os.makedirs(main_directory + '\\images\\', exist_ok=True)
-os.makedirs(main_directory + '\\videos\\', exist_ok=True)
-os.makedirs(main_directory + '\\documents\\', exist_ok=True)
-os.makedirs(main_directory + '\\music\\', exist_ok=True)
-os.makedirs(main_directory + '\\archives\\', exist_ok=True) # створення папок для сортування
+import sys
 
 def sorting(directory):
 
@@ -173,4 +158,22 @@ def normalize(name_of_file):
         
     return edited_name_of_file
 
-sorting(directory)
+if __name__ == "__main__":
+    
+    directory = sys.argv[1]
+
+    main_directory = directory #Зберігання змінної "головної директорії" для подальшого сортування файлів в системні папки в корені
+
+    os.makedirs(main_directory + '\\images\\', exist_ok=True)
+    os.makedirs(main_directory + '\\videos\\', exist_ok=True)
+    os.makedirs(main_directory + '\\documents\\', exist_ok=True)
+    os.makedirs(main_directory + '\\music\\', exist_ok=True)
+    os.makedirs(main_directory + '\\archives\\', exist_ok=True) # створення папок для сортування
+
+    images_extensions = ('.jpeg', '.png', '.jpg', '.svg')
+    videos_extensions = ('.avi', '.mp4', '.mov', '.mkv')
+    documents_extensions = ('.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx')
+    music_extensions = ('.mp3', '.ogg', '.wav', '.amr')
+    archives_extensions = ('.zip', '.gz', '.tar')
+
+    sorting(directory)
