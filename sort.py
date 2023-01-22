@@ -87,7 +87,7 @@ def sorting(directory):
                 if len(os.listdir(link)) == 0: #Видалення пустих папок на виході з рекурсії
                     print(str(link), 'is empty! DELETING')
                     os.rmdir(os.path.abspath(link))
-                    return None
+                    return ''
                 os.rename(os.path.abspath(link), directory + '\\' + normalize(link.name)) # перейменування папки при виході з рекурсивного занурення в папку
         print('RESULT for ', str(directory))
         print('Known formats: ', known_formats)
@@ -158,8 +158,8 @@ def normalize(name_of_file):
         
     return edited_name_of_file
 
-def main():
-        
+if __name__ == "__main__":
+    
     directory = sys.argv[1]
 
     main_directory = directory #Зберігання змінної "головної директорії" для подальшого сортування файлів в системні папки в корені
@@ -177,7 +177,3 @@ def main():
     archives_extensions = ('.zip', '.gz', '.tar')
 
     sorting(directory)
-
-if __name__ == "__main__":
-    
-    main()
